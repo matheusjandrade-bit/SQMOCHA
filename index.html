@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SQMOCHA – Revisão e Questões</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="a.css" />
+</head>
+
+<body data-theme="dark">
+  <div id="sidebar" aria-label="Menu lateral">
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAccordion('acc-library')">
+        <span>📚 BANCO DE QUESTÕES</span><span class="acc-arrow" id="arrow-library">▶</span>
+      </div>
+      <div class="accordion-content" id="acc-library">
+        <button class="menu-btn library" type="button" onclick="openLibrary()">
+          <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="#f97316" d="M4 6h16v12H4zM8 10h8M8 14h5"/></svg>
+          Explorar Banco
+        </button>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAccordion('acc-import')">
+        <span>📁 IMPORTAÇÃO</span><span class="acc-arrow" id="arrow-import">▶</span>
+      </div>
+      <div class="accordion-content" id="acc-import">
+        <button class="menu-btn json" type="button" onclick="document.getElementById('upJson').click()">
+          <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="#0ea5e9" d="M4 4h16v16H4z"/></svg>
+          JSON (questões)
+        </button>
+        <input id="upJson" type="file" hidden accept=".json,application/json" onchange="handleFile(this,'json')"/>
+
+        <button class="menu-btn csv" type="button" onclick="document.getElementById('upCsv').click()">
+          <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="#3b82f6" d="M4 4h16v16H4z"/></svg>
+          CSV (questões)
+        </button>
+        <input id="upCsv" type="file" hidden accept=".csv,text/csv" onchange="handleFile(this,'csv')"/>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAccordion('acc-tools')">
+        <span>🧰 FERRAMENTAS</span><span class="acc-arrow" id="arrow-tools">▶</span>
+      </div>
+      <div class="accordion-content" id="acc-tools">
+        <button class="menu-btn save" type="button" onclick="exportProgress()">
+          <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="#22c55e" d="M5 20h14v-8h2L12 3 3 12h2zM9 20v-6h6v6z"/></svg>
+          💾 Salvar Progresso
+        </button>
+
+        <button class="menu-btn load" type="button" onclick="document.getElementById('upSave').click()">
+          <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="#a855f7" d="M19 9v10H5V9H3l9-7 9 7h-2zM12 12v6"/></svg>
+          📂 Importar Progresso
+        </button>
+        <input id="upSave" type="file" hidden accept=".json,.sqmocha,application/json" onchange="importProgressFile(this)"/>
+
+        <div class="sidebar-divider"></div>
+
+        <button class="menu-btn reset" type="button" onclick="resetQuiz()">
+          <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="#ef4444" d="M12 5v2m0 10v2m7-7h2M3 12H1m15.364 6.364l1.414 1.414M5.222 5.222L3.808 3.808"/></svg>
+          🔄 Reiniciar
+        </button>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAccordion('acc-review')">
+        <span>🔍 REVISÃO</span><span class="acc-arrow" id="arrow-review">▶</span>
+      </div>
+      <div class="accordion-content" id="acc-review">
+        <button class="menu-btn review" type="button" onclick="openReview()">
+          <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="#f59e0b" d="M3 4h18v14H3zM7 20h10"/></svg>
+          Revisão das Questões
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay" onclick="toggleMenu()" aria-hidden="true"></div>
+
+  <header>
+    <button class="icon-btn-header" type="button" onclick="toggleMenu()" aria-label="Abrir menu">
+      <span style="font-size:1.6rem; color:var(--fg)">☰</span>
+    </button>
+    <div style="font-weight:800; font-size:1.2rem;">
+      <span style="letter-spacing:.5px">SQ</span><span style="color:var(--coffee-light); letter-spacing:.5px">MOCHA</span>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn-header" type="button" onclick="toggleStatsModal()" title="Estatísticas" aria-label="Abrir estatísticas">
+        <img src="https://cdn-icons-png.flaticon.com/512/3408/3408591.png" class="icon-img" alt="Estatísticas" />
+      </button>
+
+      <button class="icon-btn-header" type="button" onclick="openReview()" title="Revisão" aria-label="Abrir revisão">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--fg);">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+          <circle cx="12" cy="12" r="3" />
+        </svg>
+      </button>
+
+      <button class="icon-btn-header" type="button" onclick="toggleTheme()" title="Tema claro/escuro" aria-label="Alternar tema">
+        <span id="themeIcon">🌙</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="quizView" class="quiz-view">
+    <div class="container">
+      <div class="card" role="region" aria-label="Cartão da questão">
+        <div id="qMeta" style="color:var(--muted); font-size:.85rem; font-weight:700; margin-bottom:15px;"></div>
+        <div id="qText" style="font-size:1.15rem; font-weight:500; margin-bottom:20px; line-height: 1.6;">Aguardando questões...</div>
+
+        <div id="emptyStateActions" style="display:none; margin: 30px 0 20px; text-align: center;">
+          <p style="color: var(--muted); margin-bottom: 20px;">Nenhuma questão carregada. Que tal começar?</p>
+          <div style="display: flex; gap: 24px; justify-content: center; flex-wrap: wrap;">
+            <span class="empty-link" onclick="openLibrary()" tabindex="0" role="button">📚 Banco de Questões</span>
+            <span class="empty-link" onclick="document.getElementById('upJson').click()" tabindex="0" role="button">📁 Importar JSON</span>
+            <span class="empty-link" onclick="document.getElementById('upCsv').click()" tabindex="0" role="button">📄 Importar CSV</span>
+          </div>
+        </div>
+
+        <div id="imgContainer" class="img-wrapper" title="Clique em qualquer imagem para ampliar"></div>
+
+        <div id="areaDissertativa" style="display:none; margin:30px 0">
+          <label for="txtResposta" class="sr-only">Resposta dissertativa</label>
+          <textarea id="txtResposta" placeholder="Digite sua conduta clínica..."></textarea>
+          <button class="btn-primary" type="button" style="margin-top:20px; width:100%; padding:20px" onclick="submitDissertativa()">COMPARAR GABARITO</button>
+        </div>
+
+        <div id="userResponseBox" aria-live="polite" aria-atomic="true">
+          <h4 style="margin:0 0 10px 0; font-size:.75rem; color:var(--accent-2)">SUA RESPOSTA:</h4>
+          <p id="userResponseText" style="margin:0; line-height:1.6"></p>
+        </div>
+
+        <div id="options" class="options-grid"></div>
+
+        <div id="feedback">
+          <h4 style="margin:0 0 10px 0; font-size:.75rem; color:var(--coffee-light)">COMENTÁRIO / GABARITO:</h4>
+          <p id="commentText" style="margin:0; line-height:1.7; font-size:1.1rem"></p>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-main-row">
+            <button class="btn-nav btn-secondary" type="button" onclick="changeQ(-1)">ANTERIOR</button>
+            <button class="btn-nav btn-primary"  type="button" onclick="changeQ(1)">PRÓXIMA</button>
+          </div>
+          <div class="nav-jump-row">
+            <button class="btn-jump" type="button" onclick="goToIdx(0)">INÍCIO</button>
+            <button class="btn-jump" type="button" onclick="changeQ(-10)">-10</button>
+            <button class="btn-jump" type="button" onclick="changeQ(10)">+10</button>
+            <button class="btn-jump" type="button" onclick="goToIdx(state.questions.length-1)">FIM</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="progressContainer" class="progress-container-floating" aria-live="polite" aria-atomic="true">
+      <div class="progress-track" id="progressTrack">
+        <div id="progressBar" class="progress-fill-clean"></div>
+        <div class="coffee-marker" id="coffeeMarker" aria-hidden="true">
+          <div id="steam" class="steam-wrap"><span></span><span></span><span></span></div>
+          ☕
+        </div>
+        <div id="txtPercent" class="pct-text-float" role="status" aria-label="Progresso">0%</div>
+      </div>
+    </div>
+  </main>
+
+  <section id="reviewView" class="review-view" aria-label="Revisão das questões respondidas">
+    <div class="review-head">
+      <div class="review-title">🔍 Revisão das Questões Respondidas</div>
+      <div class="review-actions">
+        <button class="pill" id="filter-all"  type="button" onclick="setReviewFilter('all')">Todas</button>
+        <button class="pill" id="filter-hit"  type="button" onclick="setReviewFilter('hit')">Acertadas</button>
+        <button class="pill" id="filter-miss" type="button" onclick="setReviewFilter('miss')">Erradas</button>
+        <button class="pill" id="filter-diss" type="button" onclick="setReviewFilter('diss')">Dissertativas</button>
+        <button class="pill" type="button" style="border-color:var(--accent-2)" onclick="closeReview()">⬅ Voltar ao Quiz</button>
+      </div>
+    </div>
+
+    <div class="review-summary">
+      <div class="chip">Respondidas: <span id="sumDone" style="font-weight:800; margin-left:6px">0</span></div>
+      <div class="chip" style="color:var(--accent)">✔ Acertos: <span id="sumHits" style="font-weight:800; margin-left:6px">0</span></div>
+      <div class="chip" style="color:var(--error)">❌ Erros: <span id="sumMiss" style="font-weight:800; margin-left:6px">0</span></div>
+      <div class="chip" style="color:#f59e0b">📝 Dissertativas: <span id="sumDiss" style="font-weight:800; margin-left:6px">0</span></div>
+    </div>
+
+    <div id="reviewList" class="review-list"></div>
+  </section>
+
+  <section id="libraryView" class="library-view" aria-label="Banco de questões disponíveis">
+    <div class="library-head">
+      <div class="library-title">📚 Banco de Questões</div>
+      <button class="pill" type="button" onclick="closeLibrary()">⬅ Voltar ao Quiz</button>
+    </div>
+    <div id="libraryList" class="library-grid"></div>
+  </section>
+
+  <div id="statsModal" class="modal" onclick="toggleStatsModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <h3 style="margin: 0 0 16px; font-weight: 700; color: var(--coffee-light);">☕ Seu Progresso</h3>
+      
+      <div class="coffee-cup-container">
+        <div class="coffee-cup">
+          <div class="coffee-fill" id="coffeeFill"></div>
+          <div class="cup-inner-shadow"></div>
+        </div>
+        <div class="cup-handle"></div>
+        <div class="steam-animation">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+
+      <div class="stats-percent" id="statsPercent">0%</div>
+
+      <div class="stats-summary">
+        <div class="stat-item hit">
+          <span class="stat-label">Acertos</span>
+          <span class="stat-value" id="statHits">0</span>
+        </div>
+        <div class="stat-item miss">
+          <span class="stat-label">Erros</span>
+          <span class="stat-value" id="statMiss">0</span>
+        </div>
+        <div class="stat-item total">
+          <span class="stat-label">Total</span>
+          <span class="stat-value" id="statTotal">0</span>
+        </div>
+      </div>
+
+      <button class="btn-primary" type="button" onclick="toggleStatsModal()">Fechar</button>
+    </div>
+  </div>
+
+  <div id="imageModal" class="img-modal">
+    <div class="close-zoom-btn" onclick="closeZoomModal()" aria-label="Fechar zoom">&times;</div>
+    <div class="zoom-hint">Scroll para Zoom | Arraste para mover</div>
+    <img id="modalImg" alt="Imagem com zoom">
+  </div>
+
+  <div id="toast" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="a.js" defer></script>
+</body>
+</html>
