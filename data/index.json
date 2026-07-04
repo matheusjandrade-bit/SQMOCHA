@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Revalida 2025",
+    "description": "Prova do Revalida 2025.1",
+    "file": "revalida_2025_1/revalida_2025_1.json",
+    "type": "json"
+  },
+   {
+    "name": "Revalida 2024.2",
+    "description": "Prova do Revalida 2024.2",
+    "file": "revalida_2024_2/revalida_2024_2.json",
+    "type": "json"
+  },
+   {
+    "name": "Revalida 2024.1",
+    "description": "Prova do Revalida 2024.1",
+    "file": "revalida_2024_1/revalida_2024_1.json",
+    "type": "json"
+  }
+]
